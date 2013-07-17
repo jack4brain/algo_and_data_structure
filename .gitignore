@@ -4,3 +4,11 @@
 *.jar
 *.war
 *.ear
+
+# Gradle artifacts
+.gradle/
+build/
+
+#IDEA
+*.iml
+.idea
