@@ -13,7 +13,7 @@ public class MergeSorter<T> {
             }
         });
 
-        Integer[] items = {4, 2, 1, 2, 3};
+        Integer[] items = {4, 3, 2, 1};
 
         System.out.println(Arrays.toString(items));
 
@@ -30,17 +30,49 @@ public class MergeSorter<T> {
     }
 
     public void sort(T[] items) {
-
+        T[] tmpArray = (T[]) new Object[items.length];
+        mergeSort(items, tmpArray, 0, items.length - 1);
     }
 
-    private void swap(T[] items, int left, int right) {
-        Object temp = items[left];
-        items[left] = items[right];
-        items[right] = (T) temp;
+    private void mergeSort(T[] items, T[] temp, int left, int right) {
+        if (left < right) {
+            int center = (left + right) / 2;
+            mergeSort(items, temp, left, center);
+            mergeSort(items, temp, center + 1, right);
+            merge(items, temp, left, center + 1, right);
+        }
     }
 
-    private boolean isNeedToSwap(T o1, T o2) {
-        return comparator.compare(o1, o2) < 0;
+
+    private void merge(T[] items, T[] temp,
+                       int leftPos, int rightPos, int rightEnd) {
+        int leftEnd = rightPos - 1;
+        int tmpPos = leftPos;
+        int numElements = rightEnd - leftPos + 1;
+
+        // Main loop
+        while (leftPos <= leftEnd && rightPos <= rightEnd) {
+            if (comparator.compare(items[leftPos], items[rightPos]) < 0) {
+                temp[tmpPos++] = items[leftPos++];
+            } else {
+                temp[tmpPos++] = items[rightPos++];
+            }
+        }
+
+        // Copy rest of first half
+        while (leftPos <= leftEnd) {
+            temp[tmpPos++] = items[leftPos++];
+        }
+
+        // Copy rest of right half
+        while (rightPos <= rightEnd) {
+            temp[tmpPos++] = items[rightPos++];
+        }
+
+        // Copy temp array back
+        for (int i = 0; i < numElements; i++, rightEnd--) {
+            items[rightEnd] = temp[rightEnd];
+        }
     }
 
 }
