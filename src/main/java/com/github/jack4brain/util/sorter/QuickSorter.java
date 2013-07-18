@@ -13,7 +13,7 @@ public class QuickSorter<T> {
             }
         });
 
-        Integer[] items = {2, 5, 3, 2, 1, 1};
+        Integer[] items = {5, 6, 3, 12, 4, 10};
 
         System.out.println(Arrays.toString(items));
 
@@ -30,44 +30,38 @@ public class QuickSorter<T> {
     }
 
     public void sort(T[] items) {
-        qSort(items, 0, items.length - 1);
+        quickSort(items, 0, items.length);
     }
 
-    private void qSort(T[] items, int low, int high) {
-        int i = low;
-        int j = high;
-        T value = items[(low + high) / 2];  // value - опорный элемент посредине между low и high
-
-        do {
-
-            while (comparator.compare(items[i], value) < 0) {
-                ++i;  // поиск элемента для переноса в старшую часть
-            }
-
-            while (comparator.compare(items[j], value) > 0) {
-                --j;  // поиск элемента для переноса в младшую часть
-            }
-
-            if (i <= j) {
-                swap(items, i, j);
-
-                // переход к следующим элементам:
-                i++;
-                j--;
-            }
-
-        } while (i < j);
-
-        if (low < j) {
-            qSort(items, low, j);
+    public void quickSort(T[] items, int left, int right) {
+        if (left >= right) {
+            return;
         }
 
-        if (i < high) {
-            qSort(items, i, high);
+        int boundary = left;
+        T leftValue = items[left];
+
+        for (int i = left + 1; i < right; i++) {
+            if (isNeedToSwap(leftValue, items[i])) {
+                boundary++;
+                swap(items, boundary, i);
+            }
         }
+
+        swap(items, left, boundary);
+        quickSort(items, left, boundary);
+        quickSort(items, boundary + 1, right);
+    }
+
+    private boolean isNeedToSwap(T o1, T o2) {
+        return comparator.compare(o1, o2) > 0;
     }
 
     private void swap(T[] items, int left, int right) {
+        if(left == right){
+            return;
+        }
+
         Object temp = items[left];
         items[left] = items[right];
         items[right] = (T) temp;
